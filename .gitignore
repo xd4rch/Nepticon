@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Nepticon runtime state and secrets
+config.json
+.env
+certs/
+logs/
+downloads/
+screenshots/
+*.pem
+*.crt
+*.key
+*.log
+server.crt
+server.key
+ns.history
+nc.history
+
+# Local test / scratch directories
+.nepticon-tests-*/
+.nepticon-reconnect-*/
+.tmp*/
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# Editors and OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

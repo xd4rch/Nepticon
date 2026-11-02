@@ -308,7 +308,11 @@ class NepticonIntegrationTests(unittest.TestCase):
         self.assertEqual(payload["outer"]["inner"], [1, 2, 3])
         self.assertEqual(payload["text"], "a{b}c%d{0}")
 
-        echo = self.node.execute('echo {"alpha": {"beta": 1}}')
+        echo_script = self.base / "literal_braces.py"
+        echo_script.write_text(
+            "print('{\"alpha\": {\"beta\": 1}}')\n", encoding="utf-8"
+        )
+        echo = self.node.execute(f'"{sys.executable}" "{echo_script}"')
         self.assertEqual(echo["exit_code"], 0)
         self.assertIn('{"alpha": {"beta": 1}}', echo["stdout"])
 

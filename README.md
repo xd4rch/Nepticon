@@ -13,6 +13,7 @@ the original Nepticon v1.2 identity.
 
 [English](#english) · [Türkçe](#türkçe)
 
+> [!WARNING]
 > **Authorized use only.** Nepticon runs commands with the privileges of the
 > account that starts the agent. Use it only on systems you are explicitly
 > authorized to administer.
@@ -95,6 +96,7 @@ required.
 | `os._exit(0)` skipped cleanup | Graceful shutdown: GOODBYE frames, socket close, audit `server_stop` |
 | `PIL.ImageGrab` screenshot command | Removed; replaced with `sysinfo`, `health`, `ps`, `env` |
 
+> [!IMPORTANT]
 > The wire protocol is **not** backward compatible with v1. Upgrade the server
 > and every agent together. The old `server.crt`/`server.key` files in the
 > repository root are no longer loaded by default; archive or delete them and
@@ -117,10 +119,11 @@ required.
 | Network exposure | Agents make outbound TLS connections only; no inbound agent listener |
 | Privilege transparency | HELLO reports `admin`/`user`; the prompt and `list` table show it |
 
-The audit chain detects accidental or opportunistic editing of the local file.
-It is not a substitute for shipping logs to an append-only remote system, because
-an attacker with root on the server can rewrite the whole file. The security
-model assumes the server host is trusted and the private key is protected.
+> [!NOTE]
+> The audit chain detects accidental or opportunistic editing of the local file.
+> It is not a substitute for shipping logs to an append-only remote system, because
+> an attacker with root on the server can rewrite the whole file. The security
+> model assumes the server host is trusted and the private key is protected.
 
 ### Platform support
 
@@ -162,9 +165,10 @@ python main.py
 python client.py --name web-01
 ```
 
-The first server run prints the generated token once and writes it to
-`config.json`. Keep that file private. On subsequent runs the token is only
-shown masked.
+> [!TIP]
+> The first server run prints the generated token once and writes it to
+> `config.json`. Keep that file private. On subsequent runs the token is only
+> shown masked.
 
 ```text
 Nepticon@Fleet> list
@@ -278,11 +282,12 @@ Agent-only: `--name`, `--insecure`.
 | `back` / `exit` / `quit` | Return to the fleet console |
 | `help` / `banner` / `clear` | UI helpers |
 
-File transfer direction is always named from the **server's** point of view:
-`upload` pushes a server file to the node, `download` pulls a node file to the
-server. Downloads land in `--downloads` (default `./downloads`) with a unique
-name; uploads without an explicit remote path land in the agent's download
-directory.
+> [!TIP]
+> File transfer direction is always named from the **server's** point of view:
+> `upload` pushes a server file to the node, `download` pulls a node file to the
+> server. Downloads land in `--downloads` (default `./downloads`) with a unique
+> name; uploads without an explicit remote path land in the agent's download
+> directory.
 
 ### Wire protocol
 
@@ -326,9 +331,10 @@ is appended to `logs/audit.jsonl` by default:
  "prev":"…64 hex…","hash":"…64 hex…"}
 ```
 
-Only metadata is stored, never command output. `audit verify` walks the file and
-reports the first line whose content or `prev` link does not match. Ship the file
-to an append-only collector for stronger guarantees.
+> [!NOTE]
+> Only metadata is stored, never command output. `audit verify` walks the file and
+> reports the first line whose content or `prev` link does not match. Ship the file
+> to an append-only collector for stronger guarantees.
 
 ### Usage scenarios
 
@@ -414,6 +420,12 @@ on `127.0.0.1` with a temporary local CA, then verifies:
 
 ### Limitations and operational notes
 
+> [!CAUTION]
+> Anyone holding the shared token can administer every connected node. There is
+> no RBAC or approval workflow. Run the agent with a dedicated least-privilege
+> account, keep the token and CA private, and never use `--insecure` outside an
+> isolated lab.
+
 - Nepticon is a **fleet console**, not a full configuration-management system. It
   has no RBAC, approval workflow or multi-operator session isolation; anyone who
   holds the shared token can administer every connected node.
@@ -463,6 +475,7 @@ Temel yetenekler:
 - Üstel geri çekilme ve jitter ile otomatik yeniden bağlanma
 - `prompt_toolkit` tabanlı, mod bilinci açık (`Nepticon@Fleet` / `Nepticon@Node[...]`) konsol
 
+> [!WARNING]
 > **Yalnızca yetkili kullanım.** Nepticon, ajanı başlatan hesabın yetkileriyle
 > komut çalıştırır. Yalnızca yönetmeye açıkça yetkili olduğunuz sistemlerde
 > kullanın.
@@ -526,6 +539,7 @@ Bileşenler:
 | `os._exit(0)` ile temizliksiz çıkış | GOODBYE, soket kapatma ve `server_stop` denetim kaydı |
 | `PIL.ImageGrab` ekran görüntüsü | Kaldırıldı; `sysinfo`, `health`, `ps`, `env` eklendi |
 
+> [!IMPORTANT]
 > Tel protokolü v1 ile **uyumlu değildir**. Sunucu ve tüm ajanlar birlikte
 > güncellenmelidir. Depo kökündeki eski `server.crt`/`server.key` dosyaları
 > artık varsayılan olarak yüklenmez; bunları arşivleyin veya silin ve üretilen
@@ -548,10 +562,11 @@ Bileşenler:
 | Ağ maruziyeti | Ajan yalnızca dışarı bağlanır; gelen port dinlemez |
 | Yetki şeffaflığı | HELLO `admin`/`user` bildirir; prompt ve tabloda gösterilir |
 
-Yerel hash zinciri, dosyanın kazara veya fırsatçı biçimde değiştirilmesini
-**tespit eder**, ancak sunucuda root yetkisi olan bir saldırgana karşı
-**kanıtlanamaz** kılmaz. Güçlü garanti için kayıtları değiştirilemez (WORM) bir
-uzak toplayıcıya gönderin.
+> [!NOTE]
+> Yerel hash zinciri, dosyanın kazara veya fırsatçı biçimde değiştirilmesini
+> **tespit eder**, ancak sunucuda root yetkisi olan bir saldırgana karşı
+> **kanıtlanamaz** kılmaz. Güçlü garanti için kayıtları değiştirilemez (WORM) bir
+> uzak toplayıcıya gönderin.
 
 ### Platform desteği
 
@@ -587,6 +602,10 @@ python main.py
 # 2. terminal — düğüm ajanı (config.json'dan host/port/jeton/CA okur)
 python client.py --name web-01
 ```
+
+> [!TIP]
+> Sunucunun ilk çalıştırması üretilen jetonu bir kez gösterir ve `config.json`
+> dosyasına yazar. Bu dosyayı gizli tutun; sonraki çalıştırmalarda jeton maskelenir.
 
 Uzak düğüm için:
 
@@ -673,10 +692,11 @@ Kullanışlı bayraklar: `--host --port --token --cert --key --ca --config
 | `back` / `exit` / `quit` | Filo konsoluna döner |
 | `help` / `banner` / `clear` | Görsel yardımcılar |
 
-Dosya yönleri **sunucu bakış açısıyla** adlandırılır: `upload` sunucudan düğüme
-gönderir, `download` düğümden sunucuya çeker. İndirilenler `--downloads`
-(varsayılan `./downloads`) dizinine benzersiz adla yazılır; uzak yol verilmeyen
-yüklemeler ajanın indirme dizinine düşer.
+> [!TIP]
+> Dosya yönleri **sunucu bakış açısıyla** adlandırılır: `upload` sunucudan düğüme
+> gönderir, `download` düğümden sunucuya çeker. İndirilenler `--downloads`
+> (varsayılan `./downloads`) dizinine benzersiz adla yazılır; uzak yol verilmeyen
+> yüklemeler ajanın indirme dizinine düşer.
 
 ### Tel protokolü
 
@@ -719,8 +739,9 @@ içerir; komut çıktısı saklanmaz. Her kayıt önceki kaydın SHA-256 özetin
  "prev":"…64 hex…","hash":"…64 hex…"}
 ```
 
-`audit verify` zinciri yeniden hesaplar ve ilk bozuk satırı bildirir. Daha güçlü
-değiştirilemezlik için dosyayı harici bir append-only toplayıcıya gönderin.
+> [!NOTE]
+> `audit verify` zinciri yeniden hesaplar ve ilk bozuk satırı bildirir. Daha güçlü
+> değiştirilemezlik için dosyayı harici bir append-only toplayıcıya gönderin.
 
 ### Kullanım senaryoları
 
@@ -748,6 +769,11 @@ aktarımı, denetim zinciri ve kurcalama tespitini, sunucu yeniden başladıktan
 sonra ajanın yeni soketle yeniden bağlanmasını doğrular (14 test).
 
 ### Sınırlamalar
+
+> [!CAUTION]
+> Jetonu bilen herkes tüm bağlı düğümleri yönetebilir; RBAC veya onay akışı
+> yoktur. Ajanı ayrı ve en az yetkili bir hesapla çalıştırın, jetonu ve CA'yı
+> gizli tutun ve `--insecure` seçeneğini asla izole olmayan ağlarda kullanmayın.
 
 - Nepticon tam bir yapılandırma yönetimi (Ansible/Puppet) yerine geçmez; RBAC,
   onay akışı ve çoklu operatör izolasyonu yoktur. Jetonu bilen herkes tüm
